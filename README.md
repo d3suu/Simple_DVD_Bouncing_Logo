@@ -3,6 +3,8 @@
 
 ## Compiling and running
 ```shell
+~# git clone https://github.com/d3suu/Simple_DVD_Bouncing_Logo.git
+~# cd Simple_DVD_Bouncing_Logo
 ~# gcc logo.c -o logo
 ~# ./logo
 ```

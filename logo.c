@@ -10,9 +10,9 @@
 #define X_SIZE 50
 #define SPEED 150
 
-
+int i, j;
 char screenBuffer[Y_SIZE][X_SIZE];
-const char logoChar = 'A';
+const char logoChar = '@';
 const char borderChar = '#';
 long long loopCount = 0;
 struct logo {
@@ -28,18 +28,18 @@ int main(){
 	// setup
 
 	// clear buffer
-	for(int i = 0; i<Y_SIZE; i++){
-		for(int j = 0; j<X_SIZE; j++){
+	for(i = 0; i<Y_SIZE; i++){
+		for(j = 0; j<X_SIZE; j++){
 			screenBuffer[i][j] = ' ';
 		}
 	}
 
 	// setup borders
-	for(int i = 0; i<X_SIZE; i++){
+	for(i = 0; i<X_SIZE; i++){
 		screenBuffer[0][i] = borderChar;
 		screenBuffer[Y_SIZE-1][i] = borderChar;
 	}
-	for(int i = 0; i<Y_SIZE; i++){
+	for(i = 0; i<Y_SIZE; i++){
 		screenBuffer[i][0] = borderChar;
 		screenBuffer[i][X_SIZE-1] = borderChar;
 	}
@@ -55,13 +55,21 @@ int main(){
 	}
 	logoPos.last_x = 1; // here 1 is safe becouse (0, 0) is border
 	logoPos.last_y = 1;
-	logoPos.move_right = true;
-	logoPos.move_down = true;
+	if(rand() <= 0.5f*RAND_MAX){
+		logoPos.move_right = true;
+	}else{
+		logoPos.move_right = false;
+	}
+	if(rand() <= 0.5f*RAND_MAX){
+		logoPos.move_down = true;
+	}else{
+		logoPos.move_down = false;
+	}
 
 	// HERE BEGINS FUN (aka main loop)
 
 	while(1){ // "game" loop
-		for(int i = 0; i<20; i++){ // clear screen
+		for(i = 0; i<20; i++){ // clear screen
 			printf("\n");
 		}
 
@@ -76,8 +84,8 @@ int main(){
 		printf("X: %d, Y: %d, RAND: %d, RIGHT: %d, DOWN: %d, LOOP: %lld\n", logoPos.x, logoPos.y, rand(), logoPos.move_right, logoPos.move_down, loopCount);
 #endif
 		// print screenBuffer
-		for(int i = 0; i<Y_SIZE; i++){
-			for(int j = 0; j<X_SIZE; j++){
+		for(i = 0; i<Y_SIZE; i++){
+			for(j = 0; j<X_SIZE; j++){
 				printf("%c", screenBuffer[i][j]);
 			}
 			printf("\n");
@@ -87,30 +95,38 @@ int main(){
 		logoPos.last_x = logoPos.x;
 		logoPos.last_y = logoPos.y;
 		
-		if(logoPos.x == 1){
-			logoPos.move_right = true;
+		switch(logoPos.x){
+			case 1:
+				logoPos.move_right = true;
+				break;
+			case X_SIZE-2:
+				logoPos.move_right = false;
+				break;
 		}
-		if(logoPos.x == X_SIZE-2){
-			logoPos.move_right = false;
+		switch(logoPos.y){
+			case 1:
+				logoPos.move_down = true;
+				break;
+			case Y_SIZE-2:
+				logoPos.move_down = false;
+				break;
 		}
-
-		if(logoPos.y == 1){
-			logoPos.move_down = true;
+		switch(logoPos.move_right){
+			case true:
+				logoPos.x += 1;
+				break;
+			case false:
+				logoPos.x -= 1;
+				break;
 		}
-		if(logoPos.y == Y_SIZE-2){
-			logoPos.move_down = false;
+		switch(logoPos.move_down){
+			case true:
+				logoPos.y += 1;
+				break;
+			case false:
+				logoPos.y -= 1;
+				break;
 		}
-
-		if(logoPos.move_right == true){
-			logoPos.x += 1;
-		}else{
-			logoPos.x -= 1;
-		}
-		if(logoPos.move_down == true){
-			logoPos.y += 1;
-		}else{
-			logoPos.y -= 1;
-		};
 
 		// sleep (screen flickering fix)
 		usleep(SPEED*1000);
